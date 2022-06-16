@@ -2,7 +2,8 @@ package com.android.sample.app
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.android.sample.app.domain.Dashboard
+import com.android.sample.app.database.movie.MovieDao
+import com.android.sample.app.domain.Movies
 import com.android.sample.app.network.ApiService
 import com.android.sample.app.repository.MovieRepository
 import com.android.sample.app.util.ViewState
@@ -24,7 +25,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
-class DashboardViewModelTest {
+class MainViewModelTest {
 
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
@@ -36,7 +37,7 @@ class DashboardViewModelTest {
     private lateinit var api: ApiService
 
     @Mock
-    private lateinit var dao: DashboardDao
+    private lateinit var dao: MovieDao
 
     @Mock
     private lateinit var context: Context
@@ -53,8 +54,8 @@ class DashboardViewModelTest {
             context.isNetworkAvailable()
         } returns true
         testCoroutineRule.runBlockingTest {
-            `when`(dao.getDashboard()).thenReturn(null)
-            `when`(api.getDashboard()).thenReturn(Dashboard(Links(emptyList())))
+            `when`(dao.getMovies()).thenReturn(null)
+            `when`(api.getMovies()).thenReturn(Movies(imageBase = "", movies = emptyList()))
         }
         val repository = MovieRepository(dao, api, context, Dispatchers.Main)
         testCoroutineRule.pauseDispatcher()
@@ -74,7 +75,7 @@ class DashboardViewModelTest {
             context.isNetworkAvailable()
         } returns true
         testCoroutineRule.runBlockingTest {
-            `when`(api.getDashboard()).thenThrow(RuntimeException(""))
+            `when`(api.getMovies()).thenThrow(RuntimeException(""))
         }
         val repository = MovieRepository(dao, api, context, Dispatchers.Main)
         testCoroutineRule.pauseDispatcher()

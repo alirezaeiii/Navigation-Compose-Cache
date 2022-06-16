@@ -3,7 +3,9 @@ package com.android.sample.app
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.android.sample.app.domain.Section
+import com.android.sample.app.database.detail.MovieDetailDao
+import com.android.sample.app.domain.Detail
+import com.android.sample.app.domain.Movie
 import com.android.sample.app.network.ApiService
 import com.android.sample.app.repository.MovieDetailRepository
 import com.android.sample.app.ui.Screens
@@ -22,13 +24,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
-class SectionViewModelTest {
+class DetailViewModelTest {
 
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
@@ -40,7 +41,7 @@ class SectionViewModelTest {
     private lateinit var api: ApiService
 
     @Mock
-    private lateinit var dao: SectionDao
+    private lateinit var dao: MovieDetailDao
 
     @Mock
     private lateinit var context: Context
@@ -57,17 +58,17 @@ class SectionViewModelTest {
             context.isNetworkAvailable()
         } returns true
         testCoroutineRule.runBlockingTest {
-            `when`(api.getSection(anyString())).thenReturn(
-                Section("id", "title", "description")
+            `when`(api.getMovieData()).thenReturn(
+                Detail(movieData = emptyList())
             )
-            `when`(dao.getSection(anyString())).thenReturn(null)
+            `when`(dao.getMovieDetail(anyInt())).thenReturn(null)
         }
         val repository = MovieDetailRepository(dao, api, context, Dispatchers.Main)
         testCoroutineRule.pauseDispatcher()
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
         every {
-            savedStateHandle.get<Link>(Screens.MOVIE)
-        } returns Link("id", "title", "href")
+            savedStateHandle.get<Movie>(Screens.MOVIE)
+        } returns Movie(1, "32.00€", "", false)
         val viewModel = DetailViewModel(repository, savedStateHandle)
         assertThat(viewModel.stateFlow.value, `is`(ViewState.Loading))
 
@@ -84,14 +85,14 @@ class SectionViewModelTest {
             context.isNetworkAvailable()
         } returns true
         testCoroutineRule.runBlockingTest {
-            `when`(api.getSection(anyString())).thenThrow(RuntimeException(""))
+            `when`(api.getMovieData()).thenThrow(RuntimeException(""))
         }
         val repository = MovieDetailRepository(dao, api, context, Dispatchers.Main)
         testCoroutineRule.pauseDispatcher()
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
         every {
-            savedStateHandle.get<Link>(Screens.MOVIE)
-        } returns Link("id", "title", "href")
+            savedStateHandle.get<Movie>(Screens.MOVIE)
+        } returns Movie(1, "32.00€", "", false)
         val viewModel = DetailViewModel(repository, savedStateHandle)
         assertThat(viewModel.stateFlow.value, `is`(ViewState.Loading))
 
@@ -108,17 +109,17 @@ class SectionViewModelTest {
             context.isNetworkAvailable()
         } returns false
         testCoroutineRule.runBlockingTest {
-            `when`(api.getSection(anyString())).thenReturn(
-                Section("id", "title", "description")
+            `when`(api.getMovieData()).thenReturn(
+                Detail(movieData = emptyList())
             )
-            `when`(dao.getSection(anyString())).thenReturn(null)
+            `when`(dao.getMovieDetail(anyInt())).thenReturn(null)
         }
         val repository = MovieDetailRepository(dao, api, context, Dispatchers.Main)
         testCoroutineRule.pauseDispatcher()
         val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
         every {
-            savedStateHandle.get<Link>(Screens.MOVIE)
-        } returns Link("id", "title", "href")
+            savedStateHandle.get<Movie>(Screens.MOVIE)
+        } returns Movie(1, "32.00€", "", false)
         val viewModel = DetailViewModel(repository, savedStateHandle)
         assertThat(viewModel.stateFlow.value, `is`(ViewState.Loading))
 
