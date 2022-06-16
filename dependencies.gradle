@@ -1,0 +1,47 @@
+ext.versions = [
+        minSdk           : 21,
+        compileSdk       : 32,
+        versionCode      : 1,
+        versionName      : '1.0.0',
+
+        // gradle plugins
+        gradleBuildTool  : '7.2.1',
+
+        // kotlin
+        kotlin           : '1.6.10',
+
+        // support library
+        appCompat        : '1.4.2',
+        materialVersion  : '1.6.1',
+
+        // architecture components
+        roomVersion      : '2.4.2',
+        navigation       : '2.4.2',
+
+        // di
+        hilt             : '2.40',
+
+        // Compose
+        compose          : '1.1.1',
+        activityCompose  : '1.4.0',
+        accompanist      : '0.23.1',
+
+        // network
+        retrofitVersion  : '2.9.0',
+        okhttpVersion    : '4.4.0',
+
+        // coroutines
+        coroutinesVersion: '1.5.2',
+
+        // coil
+        coilVersion      : '1.4.0',
+
+        // debugging
+        timberVersion    : '5.0.1',
+
+        // unit test
+        junitVersion     : '4.12',
+        androidxTest     : '2.1.0',
+        mockitoVersion   : '2.23.0',
+        mockkVersion     : '1.10.0'
+]
